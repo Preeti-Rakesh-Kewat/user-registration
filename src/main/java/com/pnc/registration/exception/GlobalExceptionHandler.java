@@ -1,6 +1,6 @@
 package com.pnc.registration.exception;
 
-import com.pnc.registration.model.domain.RegistrationResponseData;
+import com.pnc.registration.model.domain.RegistrationResponseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -9,11 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
+import java.util.Arrays;
+import java.util.List;
 import java.util.StringJoiner;
 
 @Data
@@ -43,34 +46,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errorMessage = "ConstraintViolationException occurred.";
         }
 
-        RegistrationResponseData error = getErrorResponse(errorMessage);
-
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(getErrorResponse(errorMessage),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<Object> headerMissingException(MissingRequestHeaderException ex) {
-        RegistrationResponseData error = getErrorResponse(ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(getErrorResponse(ex.getMessage()),HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler(GeoLocationClientException.class)
-    public ResponseEntity<Object> cceCacheException(GeoLocationClientException ex) {
-
-
-        RegistrationResponseData error = getErrorResponse(ex.getMessage());
+    public ResponseEntity<RegistrationErrorResponseDto> cceCacheException(GeoLocationClientException ex) {
         log.error("[GeoLocationClientException]:{} ", ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(getErrorResponse(ex.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
-    private RegistrationResponseData getErrorResponse(String message) {
-        RegistrationResponseData error = new RegistrationResponseData();
-        error.setStatus("ERROR");
-        error.setMessage(message);
-        return error;
+    @ExceptionHandler(value = {UserNotEligibleException.class})
+    public ResponseEntity<RegistrationErrorResponseDto> resourceNotFoundException(UserNotEligibleException ex) {
+        return new ResponseEntity<>(getErrorResponse(ex.getMessage()),HttpStatus.BAD_REQUEST);
     }
+
+    private RegistrationErrorResponseDto getErrorResponse(String msg){
+        return RegistrationErrorResponseDto.builder()
+                .status("ERROR")
+                .errorMessage(msg)
+                .build();
+
+    }
+
 }
 

@@ -2,43 +2,43 @@ package com.pnc.registration.service;
 
 import com.pnc.registration.client.GeoLocationClient;
 import com.pnc.registration.exception.GeoLocationClientException;
-import com.pnc.registration.model.client.GeoLocation;
-import com.pnc.registration.model.domain.RegistrationResponseData;
-import com.pnc.registration.model.domain.User;
+import com.pnc.registration.exception.UserNotEligibleException;
+import com.pnc.registration.model.client.GeoLocationClientDto;
+import com.pnc.registration.model.domain.RegistrationResponseDto;
+import com.pnc.registration.model.domain.RegistrationRequestDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+//@RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
 
-    private GeoLocationClient geoLocationClient;
+    private final GeoLocationClient geoLocationClient;
 
-    /**
-     * @param user
-     * @return RegistrationResponseData
-     */
+
     @Override
-    public RegistrationResponseData register(User user) {
-        GeoLocation geoLocation = null;
+    public RegistrationResponseDto register(RegistrationRequestDto registrationRequestDto) {
+        GeoLocationClientDto geoLocation = null;
 
       try {
-        geoLocation = geoLocationClient.getGeoLocation(user.getIpAddress());
+        geoLocation = geoLocationClient.getGeoLocation(registrationRequestDto.getIpAddress());
       }catch(Exception ex){
           throw new GeoLocationClientException(ex.getMessage());
         }
 
-        RegistrationResponseData responseData = null;
-        if (geoLocation.getCountryCode().equalsIgnoreCase("CA")) {
-            responseData.setStatus("Success");
-            responseData.setRegistrationNumber(java.util.UUID.randomUUID().toString());
-            responseData.setMessage(" Welcome " + user.getUserName() + " from " + geoLocation.getCity());
+        if (geoLocation!=null && "CA".equalsIgnoreCase(geoLocation.getCountryCode()) ){
+            return RegistrationResponseDto.builder()
+                    .Status("SUCCESS")
+                    .RegistrationNumber(UUID.randomUUID().toString())
+                    .Message("Welcome " + registrationRequestDto.getUserName() + " from " + geoLocation.getCity())
+                    .build();
         } else {
-            responseData.setStatus("Success");
-            responseData.setMessage("user is not eligible to register");
+            throw new UserNotEligibleException("User is not eligible for register");
         }
-        return responseData;
 
     }
 

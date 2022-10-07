@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GeoLocation implements Serializable {
+public class GeoLocationClientDto implements Serializable {
     private String status;
     private String countryCode;
     private String city;

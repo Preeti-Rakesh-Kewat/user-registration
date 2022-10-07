@@ -1,8 +1,8 @@
 package com.pnc.registration.service;
 
-import com.pnc.registration.model.domain.RegistrationResponseData;
-import com.pnc.registration.model.domain.User;
+import com.pnc.registration.model.domain.RegistrationResponseDto;
+import com.pnc.registration.model.domain.RegistrationRequestDto;
 
 public interface RegistrationService {
-    RegistrationResponseData register(User user);
+    RegistrationResponseDto register(RegistrationRequestDto user);
 }

@@ -1,9 +1,11 @@
 package com.pnc.registration.controller;
 
-import com.pnc.registration.model.domain.RegistrationResponseData;
-import com.pnc.registration.model.domain.User;
+import com.pnc.registration.model.domain.RegistrationResponseDto;
+import com.pnc.registration.model.domain.RegistrationRequestDto;
+
 import com.pnc.registration.service.RegistrationService;
-import lombok.AllArgsConstructor;;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +19,19 @@ import javax.validation.Valid;
 
 @Validated
 @RestController
-@RequestMapping("/user-management/v1")
+@RequestMapping(path = "/user-management/v1")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class RegistrationController {
+  //@Autowired
+  private final RegistrationService registrationService;
 
-private RegistrationService registrationService;
 
-    @PostMapping("/register")
-    private ResponseEntity registerUser(@Valid @RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(registrationService.register(user));
+
+    @PostMapping(path= "/register", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<RegistrationResponseDto> registerUser(@Valid @RequestBody RegistrationRequestDto user) {
+
+        return new ResponseEntity<>(registrationService.register(user), HttpStatus.CREATED);
 
     }
 }

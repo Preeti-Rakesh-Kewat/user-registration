@@ -1,5 +1,6 @@
 package com.pnc.registration.model.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,8 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-public class User implements Serializable {
+@AllArgsConstructor
+public class RegistrationRequestDto implements Serializable {
     @NotBlank(message = "Username should not be null or empty")
     private String userName;
 
