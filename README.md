@@ -1,9 +1,11 @@
+## Note: Unit Test In Progess
 # user-registration
 Springboot Rest API Expose Endpoint to register User
 
 # Swagger-UI/OpenAPI
 [SwaggerUI](http://localhost:8080/swagger-ui.html)
 http://localhost:8080/swagger-ui.html
+[Health Endpoint](http://localhost:8080/actuator/health)
 
 Note:Incase testing using the Swagger-UI interface on the web browser doesnt work
 Please install below chrome extension
@@ -27,4 +29,5 @@ For building and running the application you need:
 
 Alternatively
 run from command prompt
+./gradlew bootRun
 
