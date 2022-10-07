@@ -1,10 +1,10 @@
-package com.pnc.registration.service.impl;
+package com.pnc.registration.service;
 
 import com.pnc.registration.client.GeoLocationClient;
+import com.pnc.registration.exception.GeoLocationClientException;
 import com.pnc.registration.model.client.GeoLocation;
 import com.pnc.registration.model.domain.RegistrationResponseData;
 import com.pnc.registration.model.domain.User;
-import com.pnc.registration.service.RegistrationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,15 @@ public class RegistrationServiceImpl implements RegistrationService {
      */
     @Override
     public RegistrationResponseData register(User user) {
+        GeoLocation geoLocation = null;
 
-        GeoLocation geoLocation = geoLocationClient.getGeoLocation(user.getIpAddress());
+      try {
+        geoLocation = geoLocationClient.getGeoLocation(user.getIpAddress());
+      }catch(Exception ex){
+          throw new GeoLocationClientException(ex.getMessage());
+        }
 
-        RegistrationResponseData responseData = new RegistrationResponseData();
+        RegistrationResponseData responseData = null;
         if (geoLocation.getCountryCode().equalsIgnoreCase("CA")) {
             responseData.setStatus("Success");
             responseData.setRegistrationNumber(java.util.UUID.randomUUID().toString());
