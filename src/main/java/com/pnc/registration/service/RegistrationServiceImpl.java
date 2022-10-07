@@ -4,8 +4,8 @@ import com.pnc.registration.client.GeoLocationClient;
 import com.pnc.registration.exception.GeoLocationClientException;
 import com.pnc.registration.exception.UserNotEligibleException;
 import com.pnc.registration.model.client.GeoLocationClientDto;
-import com.pnc.registration.model.domain.RegistrationResponseDto;
 import com.pnc.registration.model.domain.RegistrationRequestDto;
+import com.pnc.registration.model.domain.RegistrationResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-//@RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final GeoLocationClient geoLocationClient;

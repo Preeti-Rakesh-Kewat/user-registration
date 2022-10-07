@@ -1,8 +1,7 @@
 package com.pnc.registration.controller;
 
-import com.pnc.registration.model.domain.RegistrationResponseDto;
 import com.pnc.registration.model.domain.RegistrationRequestDto;
-
+import com.pnc.registration.model.domain.RegistrationResponseDto;
 import com.pnc.registration.service.RegistrationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
 public class RegistrationController {
-  //@Autowired
   private final RegistrationService registrationService;
 
 
