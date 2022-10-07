@@ -5,21 +5,23 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
+import java.util.List;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @Data
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 @EqualsAndHashCode(callSuper = false)
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler  {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> constraintValidationException(ConstraintViolationException constraintViolationException) {
@@ -44,6 +46,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(getErrorResponse(errorMessage),HttpStatus.BAD_REQUEST);
     }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        List<RegistrationErrorResponseDto> errorDtoList= ex.getBindingResult().getFieldErrors()
+                .stream().map(err -> RegistrationErrorResponseDto.builder()
+                        .status("ERROR")
+                        .errorMessage(err.getField() + " " + err.getDefaultMessage())
+                        .build()
+                )
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(errorDtoList, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<Object> headerMissingException(MissingRequestHeaderException ex) {
