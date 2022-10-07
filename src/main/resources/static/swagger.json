@@ -1,0 +1,144 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "User Management API",
+    "description": "Handles user registration",
+    "contact": {
+      "name": "preeti kewat",
+      "email": "preeti.kewat@ibm.com"
+    },
+    "version": "1.0.0",
+    "x-versionDetails": "versionNumber: 1.0.0\nversionDescription: Swagger generated."
+  },
+  "servers": [
+    {
+      "url": "user-management/v1"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "register User",
+        "description": "This endpoint handles user registration",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          },
+          "description": "accepts any JSON String as request body."
+        },
+        "responses": {
+          "201": {
+            "description": "201 Created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponseData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "System error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "description": "Request body that contains username, password, and IP address",
+        "properties": {
+          "userName": {
+            "type": "string",
+            "description": "User name",
+            "example": "John Dave"
+          },
+          "password": {
+            "description": "password, Password need to be greater than 8 characters, containing at least 1 number, 1 Captialized letter, 1 special character in this set \"_",
+            "type": "string",
+            "example": "August@1234"
+          },
+          "ipAddress": {
+            "type": "string",
+            "description": "User IP Address",
+            "example": "192.168.2.16"
+          }
+        }
+      },
+      "RegistrationResponseData": {
+        "type": "object",
+        "description": "CacheResponse",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of transaction",
+            "example": "SUCCESS"
+          },
+          "registrationnumber": {
+            "type": "string",
+            "description": "uuid",
+            "example": "12313213123"
+          },
+          "massage": {
+            "type": "string",
+            "description": "welcome message",
+            "example": "Welcome John Dave from Kanata"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "description": "base object for the error response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "status of the response",
+            "example": "ERROR"
+          },
+          "errorMsg": {
+            "type": "string",
+            "description": "status of the response",
+            "example": "Exception Occured"
+          }
+        }
+      }
+    }
+  }
+}
